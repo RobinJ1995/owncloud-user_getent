@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<info>
+	<id>user_getent</id>
+	<name>NSS user authentication</name>
+	<description>User authentication with the output of `getent passwd` and `getent shadow`. Required `sudo` to be installed and the following line to be present in the sudoers file: `www-data ALL= NOPASSWD: /usr/bin/getent passwd, /usr/bin/getent shadow`</description>
+	<version>1.0</version>
+	<licence>GPLv3</licence>
+	<author>Robin Jacobs</author>
+	<require>7.0</require>
+	<types>
+		<authentication />
+	</types>
+</info>
