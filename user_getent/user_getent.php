@@ -6,7 +6,10 @@ class OC_USER_GETENT extends OC_User_Backend implements OC_User_Interface
 
 	public function __construct ()
 	{
-		exec ('sudo getent passwd', $passwd);
+		$passwd = array ();
+		$shadow = array ();
+		
+		exec ('getent passwd', $passwd);
 		exec ('sudo getent shadow', $shadow);
 
 		foreach ($passwd as $key => $user)
@@ -45,11 +48,11 @@ class OC_USER_GETENT extends OC_User_Backend implements OC_User_Interface
 	public function checkPassword ($username, $password)
 	{
 		$username = strtolower ($username);
-
-		$user = $this->users[$username];
-
+		
 		if (! $this->usernameExists ($username))
 			return false;
+
+		$user = $this->users[$username];
 
 		if (crypt ($password, $user[1]) == $user[1])
 			return $username;
