@@ -26,7 +26,7 @@ class OC_USER_GETENT extends OC_User_Backend implements OC_User_Interface
 			$boom = explode (':', $shadow[$key]);
 			$crypt = $boom[1];
 
-			if ($uid >= 1000 && $crypt != 'x' && $crypt != '*' && $shell != '/bin/false')
+			if ($uid >= 1000 && $crypt != 'x' && $crypt != '*' && $shell != '/bin/false' && $shell != '/usr/sbin/nologin')
 				$this->users[$username] = array ($username, $crypt, $uid, $gid, $gecos, $home, $shell);
 		}
 	}
