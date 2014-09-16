@@ -11,24 +11,25 @@ class OC_USER_GETENT extends OC_User_Backend implements OC_User_Interface
 		
 		exec ('getent passwd', $passwd);
 		exec ('sudo getent shadow', $shadow);
-
+		
 		foreach ($passwd as $key => $user)
 		{
 			$data = explode (':', $user);
-
+			
 			$username = $data[0];
 			$uid = $data[2];
 			$gid = $data[3];
 			$gecos = $data[4];
 			$home = $data[5];
 			$shell = $data[6];
-
+			
 			$boom = explode (':', $shadow[$key]);
 			$crypt = $boom[1];
-
+			$expire = $boom[7];
+			
 			if ($uid >= 1000 && $crypt != 'x' && $crypt != '*' && $shell != '/bin/false' && $shell != '/usr/sbin/nologin')
-				$this->users[$username] = array ($username, $crypt, $uid, $gid, $gecos, $home, $shell);
-		}
+				$this->users[$username] = array ($username, $crypt, $uid, $gid, $gecos, $home, $shell, $expire);
+		} 
 	}
 	 
 	public function deleteUser ($uid)
@@ -51,12 +52,19 @@ class OC_USER_GETENT extends OC_User_Backend implements OC_User_Interface
 		
 		if (! $this->usernameExists ($username))
 			return false;
-
+		
 		$user = $this->users[$username];
-
+		
 		if (crypt ($password, $user[1]) == $user[1])
-			return $username;
-
+		{
+			$now = ceil (time () / 60 / 60 / 24);
+			
+			if ($now <= $user[7] || $user[7] == -1 || empty ($user[7]))
+				return $username;
+			else
+				return false;
+		}
+		
 		return false;
 	}
 	
