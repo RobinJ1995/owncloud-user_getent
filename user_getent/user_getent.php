@@ -9,6 +9,12 @@ class OC_USER_GETENT extends OC_User_Backend implements OC_User_Interface
 		$passwd = array ();
 		$shadow = array ();
 		
+		$blacklistedShells = array
+		(
+			'/bin/false',
+			'/usr/bin/nologin'
+		);
+		
 		exec ('getent passwd', $passwd);
 		exec ('sudo getent shadow', $shadow);
 		
@@ -27,7 +33,7 @@ class OC_USER_GETENT extends OC_User_Backend implements OC_User_Interface
 			$crypt = $boom[1];
 			$expire = $boom[7];
 			
-			if ($uid >= 1000 && $crypt != 'x' && $crypt != '*' && $shell != '/bin/false' && $shell != '/usr/sbin/nologin')
+			if ($uid >= 1000 && $crypt != 'x' && $crypt != '*' && (! in_array ($shell, $blacklistedShells)))
 				$this->users[$username] = array ($username, $crypt, $uid, $gid, $gecos, $home, $shell, $expire);
 		} 
 	}
